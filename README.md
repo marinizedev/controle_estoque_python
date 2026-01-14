@@ -1,8 +1,8 @@
 # Sistema de Controle de Estoque
 
-![Python](hrrps://img.shields.io/badge/Python-3.14.2-blue)
+![Python](https://img.shields.io/badge/Python-3.14.2-blue)
 ![Status](https://img.shields.io/badge/Status-Em%20Desenvolvimento-yellow)
-![Último Commit](https://img.shiekds.io/github/last-commit/marinizedev/controle_estoque_python)
+![Último Commit](https://img.shields.io/github/last-commit/marinizedev/controle_estoque_python)
 
 ## Descrição
 
