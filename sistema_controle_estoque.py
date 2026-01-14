@@ -4,9 +4,7 @@ from colorama import Fore, Back, Style, init
 init(autoreset=True)
 from tabulate import tabulate
 import logging
-DEBUG_ATIVO = True
-import csv
-import os
+DEBUG_ATIVO = False
 
 # -----------------------------
 # CONFIGURAÇÃO DO ARQUIVO JSON
@@ -56,7 +54,7 @@ def ler_preco_quantidade():
         quantidade = int(quantidade_input) if quantidade_input else None
 
         if preco is not None and preco < 0:
-            print(f"{Fore.BLUE}Preço deve ser positivo.")
+            print(f"{COR_ERRO}Preço deve ser positivo.")
             return None, None
         if quantidade is not None and quantidade < 0:
             print(f"{COR_ERRO}Quantidade deve ser positiva.")
@@ -71,7 +69,11 @@ def buscar_produto(estoque, nome):
     """Verifica se o produto existe no estoque."""
     return estoque.get(nome)
 
+# -----------------------------
+# FUNÇÃO DE SIMULAÇÃO DE ERROS
+# -----------------------------
 def simular_erros():
+    """Não faz parte da lógica principal do sistema. Útil para desenvolvedores testarem logs e tratamento de exceções."""
     print(f"{COR_INPUT}\nSimulação de erros:")
     print("1 - Erro de conversão (ValuesError)")
     print("2 - Produto inexistente")
@@ -165,37 +167,6 @@ def alterar_debug():
     DEBUG_ATIVO = not DEBUG_ATIVO
     estado = "ATIVADO" if DEBUG_ATIVO else "DESATIVADO"
     print(f"{COR_SUCESSO}Modo DEBUG {estado}.")
-
-# ----------------------
-# FUNÇÕES SALVAR/CARREGAR EM CSV
-# ----------------------
-def salvar_estoque_csv(estoque, nome_arquivo="estoque.csv"):
-    """Carregando o estoque do CSV"""
-    with open(nome_arquivo, "w", newline="", encoding="utf-8") as arquivo:
-        writer = csv.writer(arquivo)
-        writer.writerow(["produto", "preco", "quantidade"]) # cabeçalho
-
-        for produto, dados in estoque.items():
-            writer.writerow([produto, dados["preco"], dados["quantidade"]])
-
-def carregar_estoque_csv(nome_arquivo="estoque.csv"):
-    estoque = {}
-
-    if not os.path.exists(nome_arquivo):
-        return estoque # se não existir, começa vazio
-    
-    with open(nome_arquivo, "r", encoding="utf-8") as arquivo:
-        reader = csv.DictReader(arquivo)
-
-        for linha in reader:
-            produto = linha["produto"]
-            estoque[produto] = {
-                "preco":
-                float(linha["preco"]),
-                "quantidade":
-                int(linha["quantidade"])
-            }
-        return estoque
     
 # ------------------------
 # FUNÇÕES DO SISTEMA
@@ -210,7 +181,8 @@ def exibir_menu():
     print(f"{COR_MENU}5- Sair do sistema")
     print(f"{COR_MENU}6- Alterar tema")
 
-estoque = carregar_estoque_csv()
+# Carrega o estoque do JSON
+estoque = carregar_estoque()
 def adicionar_produto(estoque):
     """Adiciona um produto ao estoque."""
     nome = input(f"{COR_INPUT}Nome do produto: ").strip().title()
@@ -261,7 +233,7 @@ def atualizar_produto(estoque):
     logging.info(f"Produto atualizado: {nome}")
 
 def excluir_produto(estoque):
-    """Exclui umm produto do estoque."""
+    """Exclui um produto do estoque."""
     nome = input(f"{COR_INPUT}Nome do produto a excluir: ").strip().title()
     produto = buscar_produto(estoque, nome)
 
@@ -330,7 +302,6 @@ def escolher_tema():
 # ---------------------------------
 # PROGRAMA PRINCIPAL
 # ---------------------------------
-estoque = carregar_estoque()
 aplicar_tema(TEMA_CLARO)
 while True:
     exibir_menu()
@@ -347,8 +318,8 @@ while True:
     elif opcao == "5":
         log_evento("INFO", "Sistema encerrado pelo usuário")
         print(f"{COR_AVISO}Saindo do sistema. Até logo!")
-        salvar_estoque_csv(estoque)
-        print("Estoque salvo com sucesso!")
+        salvar_estoque(estoque) # salva no JSON ao sair
+        print(f"{COR_SUCESSO}Estoque salvo com sucesso!")
         break
     elif opcao == "6":
         escolher_tema()
