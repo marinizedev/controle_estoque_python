@@ -1,5 +1,11 @@
 # Sistema de Controle de Estoque
 
+![Python](hrrps://img.shields.io/badge/Python-3.14.2-blue)
+![Status](https://img.shields.io/badge/Status-Em%20Desenvolvimento-yellow)
+![Último Commit](https://img.shiekds.io/github/last-commit/marinizedev/controle_estoque_python)
+
+## Descrição
+
 Este projeto é um **sistema de controle de estoque em Python**, desenvolvido para gerenciamento de produtos, preços e quantidades. O sistema salva os dados em um arquivo JSON e mantém logs das operações realizadas.
 
 ---
